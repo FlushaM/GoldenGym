@@ -76,14 +76,15 @@ WSGI_APPLICATION = 'GoldenGym.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'goldengym',
-        'USER': 'root',
-        'PASSWORD': '',
-        'HOST': 'localhost',
-
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'goldengymdb',  # Nombre de la base de datos en AWS RDS
+        'USER': 'matias',       # Usuario maestro configurado
+        'PASSWORD': 'tu-contraseña',  # Contraseña maestra
+        'HOST': 'tu-endpoint.aws-region.rds.amazonaws.com',  # El endpoint de AWS RDS
+        'PORT': '5432',         # Puerto predeterminado de PostgreSQL
     }
 }
+
 
 
 # Password validation
