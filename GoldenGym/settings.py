@@ -121,9 +121,15 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
-
+# Archivos estáticos (CSS, JavaScript, imágenes de la interfaz)
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')  # Carpeta de recopilación de archivos estáticos en producción
+
+# Archivos de medios (imágenes y otros archivos subidos por usuarios)
+MEDIA_URL = '/media/'  # URL pública para acceder a los medios
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')  # Carpeta donde se almacenan los archivos subidos
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 

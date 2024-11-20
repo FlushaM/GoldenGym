@@ -16,6 +16,8 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from GoldenGymApp import views
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -23,4 +25,5 @@ urlpatterns = [
     path('encargado/',views.gestion_encargados,name='gestion_encargado'),
     path('eliminar/<int:cliente_id>/', views.eliminar_cliente, name='eliminar_cliente'),
     path('validar_ingreso/', views.validar_ingreso, name='validar_ingreso'),
-]
+    path('novedades/', views.novedades, name='novedades')
+]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

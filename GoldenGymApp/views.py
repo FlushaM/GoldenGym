@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from GoldenGymApp.models import Cliente,Encargado
-from GoldenGymApp.forms import ClienteForm,EncargadoForm
+from GoldenGymApp.models import Cliente,Encargado,Novedad
+from GoldenGymApp.forms import ClienteForm,EncargadoForm,NovedadForm
 from django.urls import reverse
 from django.http import HttpResponseRedirect
 
@@ -78,3 +78,14 @@ def validar_ingreso(request):
             mensaje = "RUT no registrado. Verifique su información."
 
     return render(request, "GoldenGymApp/validar_ingreso.html", {"mensaje": mensaje})
+
+
+def novedades(request):
+    # Obtener todas las novedades y ordenarlas por fecha de publicación
+    novedades = Novedad.objects.all().order_by('-fecha_publicacion')
+
+    # Reemplazar los saltos de línea por <br> en cada novedad
+    for novedad in novedades:
+        novedad.contenido_formateado = novedad.contenido.replace('\n', '<br>')
+
+    return render(request, 'GoldenGymApp/novedades.html', {'novedades': novedades})

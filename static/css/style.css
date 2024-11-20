@@ -7,6 +7,8 @@ body {
     color: white;                /* Establece el color de texto para que sea legible sobre el fondo */
     margin: 0;                   /* Elimina márgenes por defecto del body */
     height: 100vh;        
+    display: flex;        /* Usamos flexbox */
+    flex-direction: column;
 }
 /* Personalizar el botón de envío */
 .btn-primary {
@@ -54,4 +56,19 @@ label {
     border-radius: 15px;
     border: solid 1px rgba(0, 0, 0, 0.5);
     
+}
+
+#ContainerNovedad{
+    background-color: rgba(255, 255, 255, 0.7); /* Gris con 50% de opacidad */
+    border-radius: 15px;
+    border:solid 1px rgba(41, 5, 5, 0.7);
+
+}
+
+.footer {
+    text-align: center;    /* Centra el texto dentro del footer */
+    padding: 20px;         /* Ajusta el padding a tu preferencia */
+    background-color: #343a40; /* El color de fondo de tu footer */
+    color: white;          /* Color del texto del footer */
+    width: 100%;           /* Asegura que el footer ocupe todo el ancho */
 }
