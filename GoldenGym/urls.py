@@ -24,6 +24,13 @@ urlpatterns = [
     path('',views.gestion_clientes,name='gestion_clientes'),
     path('encargado/',views.gestion_encargados,name='gestion_encargado'),
     path('eliminar/<int:cliente_id>/', views.eliminar_cliente, name='eliminar_cliente'),
+    path('editar_cliente/<int:cliente_id>/', views.editar_cliente, name='editar_cliente'),
     path('validar_ingreso/', views.validar_ingreso, name='validar_ingreso'),
-    path('novedades/', views.novedades, name='novedades')
+    path('novedades/', views.novedades, name='novedades'),
+    # Ruta para ver los reportes de un cliente
+    path('reportes_cliente/<int:cliente_id>/', views.reportes_cliente, name='reportes_cliente'),
+    
+    path('crear_reporte/<int:cliente_id>/', views.crear_reporte, name='crear_reporte'),
+    path('editar_reporte/<int:reporte_id>/', views.editar_reporte, name='editar_reporte'),
+    path('eliminar_reporte/<int:reporte_id>/', views.eliminar_reporte, name='eliminar_reporte'),
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

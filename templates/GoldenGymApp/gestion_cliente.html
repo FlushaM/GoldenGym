@@ -14,86 +14,24 @@
 
     {% block content %}
     <div id="ContainerGeneral" class="container mt-5">
-
-
         <!-- Formulario para agregar/modificar cliente -->
         <div id="ContainerGeneral1" class="card mb-4">
-            
             <div class="card-header">
                 <h2 class="text-center mb-4">Gestión de Clientes</h2>
-
             </div>
             <div id="Container" class="card-body">
                 <form method="POST">
                     {% csrf_token %}
+                    {{ form.as_p }} <!-- Esto genera todos los campos del formulario automáticamente -->
 
-                    
-                    
-                    <div class="form-row">
-                        <div class="col-7">
-                            <div class="form-row">
-                                <div class="col">
-                                    <label for="id_nombre">Nombre:</label>
-                                    <input type="text" name="nombre" id="id_nombre" class="form-control" placeholder="Ingrese su nombre" value="{{ form.nombre.value|default:'' }}">
-                                </div>
-                                
-                                <div class="col">
-                                    <label for="id_rut">RUT:</label>
-                                    <input type="text" name="rut" id="id_rut" class="form-control" placeholder="Ingrese su RUT" value="{{ form.rut.value|default:'' }}">
-                                </div>
-                            </div>
-
-                            <div class="form-row">
-                                <div class="col">
-                                    <label for="id_apellido">Apellido:</label>
-                                    <input type="text" name="apellido" id="id_apellido" class="form-control"  placeholder="Ingrese su apellido" value="{{ form.apellido.value|default:'' }}">
-                                </div>
-                                
-                                <div class="col">
-                                    <label for="id_correo">Correo:</label>
-                                    <input type="email" name="correo" id="id_correo" class="form-control"  placeholder="Ingrese su correo" value="{{ form.correo.value|default:'' }}">
-                                </div>
-
-
-                            </div>
-
-                            <div class="form-row mt-3">
-                                <button type="submit" class="btn btn-danger m-2">Eliminar</button>
-                                <button type="submit" class="btn btn-primary m-2">Modificar</button>
-                                <button type="submit" class="btn btn-success m-2">Guardar</button>
-                                
-                            </div>
-                            
-                            
-        
-                        </div>
-                        <div class="col-3">
-        
-                            <div class="col">
-                                <div class="form-group mt-3">
-                                    <label>PLAN:</label><br>
-                                    {% for choice in form.fields.membresia.choices %}
-                                        <div class="form-check form-check-inline">
-                                            <input type="checkbox" name="membresia" id="membresia_{{ forloop.counter }}" value="{{ choice.0 }}" class="form-check-input" 
-                                                {% if choice.0 == form.membresia.value %}checked{% endif %}>
-                                            <label class="form-check-label" for="membresia_{{ forloop.counter }}">{{ choice.1 }}</label>
-                                        </div>
-                                    {% endfor %}
-                                </div>
-        
-                            </div>
-        
-                        </div>
-                        
-                        
-                    </div>
-                    
-                    
-                
-                
-                    
+                    <!-- Mostrar el botón adecuado dependiendo de si es edición o creación -->
+                    {% if form.instance.pk %}
+                        <button type="submit" class="btn btn-warning m-2">Modificar</button>
+                    {% else %}
+                        <button type="submit" class="btn btn-success m-2">Guardar</button>
+                    {% endif %}
                 </form>
-                
+            </div>
         </div>
 
         <!-- Tabla de clientes -->
@@ -103,16 +41,12 @@
                 <div class="form-row mt-3">
                     <div class="col-4">
                         <label for="searchInput" class="sr-only">Buscar</label>
-                        <input type="text" class="form-control" id="searchInput" placeholder="Escribe aquí..." required >
+                        <input type="text" class="form-control" id="searchInput" placeholder="Escribe aquí..." required>
                     </div>
                     <div class="col">
                         <button type="submit" class="btn btn-primary mb-2">Buscar</button>
-
                     </div>
-                    
-                    
                 </div>
-                
             </div>
             <div class="card-body">
                 <table class="table table-bordered table-striped">
@@ -137,19 +71,67 @@
                             <td>{{ cliente.correo }}</td>
                             <td>{{ cliente.get_membresia_display }}</td>
                             <td>
+                                <a href="{% url 'reportes_cliente' cliente.id %}" class="btn btn-info btn-sm">Ver Reportes</a>
                                 <!-- Botón para editar cliente -->
-                                <form method="post" style="display:inline;">
-                                    {% csrf_token %}
-                                    <input type="hidden" name="cliente_id" value="{{ cliente.id }}">
-                                    <button type="submit" class="btn btn-warning btn-sm">Editar</button>
-                                </form>
+                                <button type="button" class="btn btn-warning btn-sm" data-toggle="modal" data-target="#editModal{{ cliente.id }}">
+                                    Editar
+                                </button>
+
                                 <!-- Botón para eliminar cliente -->
                                 <form method="post" action="{% url 'eliminar_cliente' cliente.id %}" style="display:inline;">
                                     {% csrf_token %}
                                     <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('¿Estás seguro de eliminar este cliente?');">Eliminar</button>
                                 </form>
+                                
                             </td>
                         </tr>
+
+                        <!-- Modal para editar cliente -->
+                        <div class="modal fade" id="editModal{{ cliente.id }}" tabindex="-1" role="dialog" aria-labelledby="editModalLabel{{ cliente.id }}" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="editModalLabel{{ cliente.id }}">Editar Cliente</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <!-- Formulario dentro del modal, precargado con los datos del cliente -->
+                                        <form method="POST" action="{% url 'editar_cliente' cliente.id %}">
+                                            {% csrf_token %}
+                                            <div class="form-group">
+                                                <label for="nombre">Nombre</label>
+                                                <input type="text" class="form-control" id="nombre" name="nombre" value="{{ cliente.nombre }}" required>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="apellido">Apellido</label>
+                                                <input type="text" class="form-control" id="apellido" name="apellido" value="{{ cliente.apellido }}" required>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="rut">RUT</label>
+                                                <input type="text" class="form-control" id="rut" name="rut" value="{{ cliente.rut }}" required>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="correo">Correo</label>
+                                                <input type="email" class="form-control" id="correo" name="correo" value="{{ cliente.correo }}" required>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="membresia">Membresía</label>
+                                                <select class="form-control" id="membresia" name="membresia">
+                                                    <option value="SEMANAL" {% if cliente.membresia == 'semanal' %}selected{% endif %}>Semanal - $15,000</option>
+                                                    <option value="MENSUAL" {% if cliente.membresia == 'mensual' %}selected{% endif %}>Mensual - $28,000</option>
+                                                    <option value="TRIMESTRAL" {% if cliente.membresia == 'trimestral' %}selected{% endif %}>Trimestral - $75,000</option>
+                                                    <option value="SEMESTRAL" {% if cliente.membresia == 'semestral' %}selected{% endif %}>Semestral - $135,000</option>
+                                                </select>
+
+                                            </div>
+                                            <button type="submit" class="btn btn-warning m-2">Modificar</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                         {% endfor %}
                     </tbody>
                 </table>
@@ -157,8 +139,9 @@
         </div>
     </div>
     {% endblock %}
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>

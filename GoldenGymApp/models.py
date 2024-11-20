@@ -14,7 +14,7 @@ class Cliente(models.Model):
     rut = models.CharField(max_length=12, unique=True)
     correo = models.EmailField(unique=True)
     membresia = models.CharField(max_length=10, choices=PLANES_MEMBRESIA)
-    suscripcion_activa = models.BooleanField(default=False)  # Suscripción activa
+    suscripcion_activa = models.BooleanField(default=True)  # Suscripción activa
 
     def __str__(self):
         return f"{self.nombre} {self.apellido} - {self.membresia}"
@@ -53,3 +53,28 @@ class Novedad(models.Model):
 
     def __str__(self):
         return self.titulo
+
+
+class Reporte(models.Model):
+    cliente = models.ForeignKey(Cliente, related_name='reportes', on_delete=models.CASCADE)
+    fecha = models.DateField()
+    peso_actual = models.DecimalField(max_digits=5, decimal_places=2)
+    altura = models.DecimalField(max_digits=5, decimal_places=2)
+    imc_actual = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)
+    press_banca = models.DecimalField(max_digits=5, decimal_places=2)
+    sentadilla = models.DecimalField(max_digits=5, decimal_places=2)
+    peso_muerto = models.DecimalField(max_digits=5, decimal_places=2)
+
+    def calcular_imc(self):
+        # Calcula el IMC en base al peso y la altura.
+        if self.altura > 0:
+            return round(self.peso_actual / (self.altura ** 2), 2)
+        return None
+
+    def save(self, *args, **kwargs):
+        # Calcula el IMC antes de guardar el reporte
+        self.imc_actual = self.calcular_imc()
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f"Reporte de {self.cliente.nombre} {self.cliente.apellido} - {self.fecha.strftime('%b %Y')}"

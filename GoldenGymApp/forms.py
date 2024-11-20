@@ -1,10 +1,10 @@
 from django import forms
-from .models import Cliente,Encargado,Novedad
+from .models import Cliente,Encargado,Novedad,Reporte
 
 class ClienteForm(forms.ModelForm):
-    membresia = forms.MultipleChoiceField(
+    membresia = forms.ChoiceField(
         choices=Cliente.PLANES_MEMBRESIA,
-        widget=forms.CheckboxSelectMultiple,
+        widget=forms.RadioSelect,  # Opción para seleccionar un solo plan
         label="PLAN"
     )
 
@@ -45,3 +45,12 @@ class NovedadForm(forms.ModelForm):
     class Meta:
         model = Novedad
         fields = ['titulo', 'contenido', 'imagen' ,'ruta_video']  # Incluye ambos campos
+
+
+class ReporteForm(forms.ModelForm):
+    class Meta:
+        model = Reporte
+        fields = ['fecha', 'peso_actual', 'altura', 'press_banca', 'sentadilla', 'peso_muerto']
+        widgets = {
+            'fecha': forms.SelectDateWidget(years=range(2024, 2025)),
+        }

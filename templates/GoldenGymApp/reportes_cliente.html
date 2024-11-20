@@ -1,0 +1,148 @@
+{% extends 'GoldenGymApp/base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    
+    <div id="ContainerGeneral" class="container mt-5 "> 
+
+        <div class="row">
+
+
+            <div class="col-8">
+                <div class="card mt-4 mb-4">
+                    <div class="card-header">
+                        <h2>Reportes de Cliente: {{ cliente.nombre }} {{ cliente.apellido }}</h2>
+                        <h5>Detalles del Cliente:</h5>
+                    </div>
+                    <div class="card-body">
+                        <p><strong>RUT:</strong> {{ cliente.rut }}</p>
+                        <p><strong>Correo:</strong> {{ cliente.correo }}</p>
+                        <p><strong>Membresía:</strong> {{ cliente.get_membresia_display }}</p>
+                    </div>
+                    
+                </div>
+    
+            </div>
+            <div class="col-4 mt-5 mx-auto text-center">
+            
+                <div class="row justify-content-center ">
+                    <a href="{% url 'crear_reporte' cliente.id %}" class="btn btn-success mt-3">Crear Reporte</a>
+                </div>
+                <div class="row justify-content-center mt-5">
+                    <a href="{% url 'gestion_clientes' %}" class="btn btn-primary mt-4">Volver Atras</a>
+                </div>
+            </div>
+            
+        </div>
+        
+    </div>
+
+    
+    
+
+    <div id="ContainerGeneral" class="container mt-5">
+
+        <div class="card mt-5 mb-3">
+            <div class="card-header">
+                <h5>Historial de Reportes</h5>
+            </div>
+            <div class="card-body ">
+                <table class="table table-bordered table-striped ">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Peso Actual [KG]</th>
+                            <th>Altura [M]</th>
+                            <th>IMC</th>
+                            <th>Press Banca [KG]</th>
+                            <th>Sentadilla [KG]</th>
+                            <th>Peso Muerto [KG]</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for reporte in reportes %}
+                        <tr>
+                            <td>{{ reporte.fecha }}</td>
+                            <td>{{ reporte.peso_actual }}</td>
+                            <td>{{ reporte.altura }}</td>
+                            <td>{{ reporte.imc_actual }}</td>
+                            <td>{{ reporte.press_banca }}</td>
+                            <td>{{ reporte.sentadilla }}</td>
+                            <td>{{ reporte.peso_muerto }}</td>
+                            <td>
+                                <!-- Botón para editar reporte -->
+                                <button type="button" class="btn btn-warning btn-sm" data-toggle="modal" data-target="#editModal{{ reporte.id }}">
+                                    Editar
+                                </button>
+    
+                                <!-- Botón para eliminar reporte -->
+                                <form method="post" action="{% url 'eliminar_reporte' reporte.id %}" style="display:inline;">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('¿Estás seguro de eliminar este reporte?');">Eliminar</button>
+                                </form>
+                            </td>
+                        </tr>
+    
+                        <!-- Modal para editar reporte -->
+                        <div class="modal fade" id="editModal{{ reporte.id }}" tabindex="-1" role="dialog" aria-labelledby="editModalLabel{{ reporte.id }}" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="editModalLabel{{ reporte.id }}">Editar Reporte</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <!-- Formulario dentro del modal, precargado con los datos del reporte -->
+                                        <form method="POST" action="{% url 'editar_reporte' reporte.id %}">
+                                            {% csrf_token %}
+                                            <div class="form-group">
+                                                <label for="fecha">Fecha</label>
+                                                <input type="date" class="form-control" id="fecha" name="fecha" value="{{ reporte.fecha }}" required>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="peso_actual">Peso Actual [KG]</label>
+                                                <input type="number" class="form-control" id="peso_actual" name="peso_actual" value="{{ reporte.peso_actual }}" required>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="altura">Altura [M]</label>
+                                                <input type="number" class="form-control" id="altura" name="altura" value="{{ reporte.altura }}" step="0.01" required>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="imc_actual">IMC</label>
+                                                <input type="number" class="form-control" id="imc_actual" name="imc_actual" value="{{ reporte.imc_actual }}" step="0.1" required>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="press_banca">Press Banca [KG]</label>
+                                                <input type="number" class="form-control" id="press_banca" name="press_banca" value="{{ reporte.press_banca }}" required>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="sentadilla">Sentadilla [KG]</label>
+                                                <input type="number" class="form-control" id="sentadilla" name="sentadilla" value="{{ reporte.sentadilla }}" required>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="peso_muerto">Peso Muerto [KG]</label>
+                                                <input type="number" class="form-control" id="peso_muerto" name="peso_muerto" value="{{ reporte.peso_muerto }}" required>
+                                            </div>
+                                            <button type="submit" class="btn btn-warning m-2">Modificar Reporte</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% empty %}
+                        <tr>
+                            <td colspan="8" class="text-center">No hay reportes para este cliente.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+    
+</div>
+{% endblock %}
