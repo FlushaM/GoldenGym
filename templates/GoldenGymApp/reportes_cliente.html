@@ -28,6 +28,10 @@
                 <div class="row justify-content-center ">
                     <a href="{% url 'crear_reporte' cliente.id %}" class="btn btn-success mt-3">Crear Reporte</a>
                 </div>
+
+                <div class="row justify-content-center mt-5">
+                    <a href="{% url 'generar_pdf_reportes' cliente.id %}" class="btn btn-danger mt-3">Generar PDF </a>
+                </div>
                 <div class="row justify-content-center mt-5">
                     <a href="{% url 'gestion_clientes' %}" class="btn btn-primary mt-4">Volver Atras</a>
                 </div>

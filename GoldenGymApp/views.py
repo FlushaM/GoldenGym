@@ -2,9 +2,10 @@ from django.shortcuts import render, redirect, get_object_or_404
 from GoldenGymApp.models import Cliente,Encargado,Novedad
 from GoldenGymApp.forms import ClienteForm,EncargadoForm,NovedadForm,ReporteForm
 from django.urls import reverse
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect,HttpResponse
+from weasyprint import HTML
 from django.http import JsonResponse
-
+from django.template.loader import render_to_string
 def gestion_clientes(request):
     if request.method == 'POST':
         if 'cliente_id' in request.POST:
@@ -170,3 +171,29 @@ def eliminar_reporte(request, reporte_id):
     print(f"Se está eliminando el reporte del cliente con ID: {cliente_id}")
     reporte.delete()
     return redirect('reportes_cliente', cliente_id=cliente_id)
+
+
+
+
+def generar_pdf_historial_reportes(request, cliente_id):
+    # Obtener el cliente usando su ID (o lanzar un 404 si no se encuentra)
+    cliente = get_object_or_404(Cliente, id=cliente_id)
+
+    # Obtener los reportes del cliente
+    reportes = Reporte.objects.filter(cliente_id=cliente_id)
+    
+    # Generar el HTML del historial de reportes usando un template
+    html = render_to_string('GoldenGymApp/historial_reportes_pdf.html', {
+        'reportes': reportes, 
+        'cliente': cliente,  # Pasar el cliente al contexto para usar su nombre
+        'cliente_id': cliente_id
+    })
+
+    # Generar el PDF desde el HTML
+    pdf = HTML(string=html).write_pdf()
+
+    # Devolver el PDF como una respuesta HTTP
+    response = HttpResponse(pdf, content_type='application/pdf')
+    response['Content-Disposition'] = f'attachment; filename="historial_reportes_cliente_{cliente}.pdf"'
+    
+    return response

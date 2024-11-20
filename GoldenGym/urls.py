@@ -33,4 +33,5 @@ urlpatterns = [
     path('crear_reporte/<int:cliente_id>/', views.crear_reporte, name='crear_reporte'),
     path('editar_reporte/<int:reporte_id>/', views.editar_reporte, name='editar_reporte'),
     path('eliminar_reporte/<int:reporte_id>/', views.eliminar_reporte, name='eliminar_reporte'),
+    path('generar_pdf_reportes/<int:cliente_id>/', views.generar_pdf_historial_reportes, name='generar_pdf_reportes'),
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

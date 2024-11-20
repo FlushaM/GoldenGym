@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Historial de Reportes</title>
+    {% load static %}
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f7f7f7;
+        }
+        .container {
+            width: 80%;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .header img {
+            width: 100px;
+            margin-bottom: 10px;
+        }
+        .title {
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+        th {
+            background-color: #004d99;
+            color: white;
+        }
+        td {
+            background-color: #f9f9f9;
+        }
+        tr:nth-child(even) td {
+            background-color: #f1f1f1;
+        }
+        tr:hover td {
+            background-color: #f2f2f2;
+        }
+        .empty-message {
+            text-align: center;
+            font-style: italic;
+            color: #777;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        
+ 
+        <!-- Header con el logo y título -->
+        <div class="header">
+            <h1 class="mx-auto">GOLDEN GYM</h1>
+            
+        </div>
+        <div>
+            <h2 class="title">Reporte de Cliente: {{ cliente.nombre }} {{ cliente.apellido }}</h2>
+            <p>El siguiente documento presenta todos los reportes realizados por el cliente durante su estancia en el gimnasio</p>
+
+
+        </div>
+        
+        <!-- Tabla con los reportes -->
+        <table>
+            <thead>
+                <tr>
+                    <th>Fecha</th>
+                    <th>Peso Actual [KG]</th>
+                    <th>Altura [M]</th>
+                    <th>IMC</th>
+                    <th>Press Banca [KG]</th>
+                    <th>Sentadilla [KG]</th>
+                    <th>Peso Muerto [KG]</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for reporte in reportes %}
+                    <tr>
+                        <td>{{ reporte.fecha }}</td>
+                        <td>{{ reporte.peso_actual }}</td>
+                        <td>{{ reporte.altura }}</td>
+                        <td>{{ reporte.imc_actual }}</td>
+                        <td>{{ reporte.press_banca }}</td>
+                        <td>{{ reporte.sentadilla }}</td>
+                        <td>{{ reporte.peso_muerto }}</td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="7" class="empty-message">No hay reportes para este cliente.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+</body>
+</html>
