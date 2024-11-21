@@ -79,8 +79,8 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'goldengymdb',  # Nombre de la base de datos en AWS RDS
         'USER': 'matias',       # Usuario maestro configurado
-        'PASSWORD': 'tu-contraseña',  # Contraseña maestra
-        'HOST': 'tu-endpoint.aws-region.rds.amazonaws.com',  # El endpoint de AWS RDS
+        'PASSWORD': 'Hola.123456.',  # Contraseña maestra
+        'HOST': 'db-golden-gym.c9s6was6a3vs.us-east-1.rds.amazonaws.com',  # El endpoint de AWS RDS
         'PORT': '5432',         # Puerto predeterminado de PostgreSQL
     }
 }
